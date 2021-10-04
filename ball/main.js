@@ -4,31 +4,51 @@ let ballAmount = 0
 let ballCounter = []
 let gravity=  0.5
 let bouncines = 0.8
+let xPos
+let yPos
+isApressed = false
 
-////
-/////
-/////////
-//////////// naprawic myszke get bpunding cient rect potem kolorki on hover
 
 canvas.addEventListener('click', createBall, true) //wywołuje funkcję create ball po kliknięciu LPM
 
+
+document.addEventListener('mousemove', (event) => {
+    xPos = event.clientX
+    yPos = event.clientY
+	
+});
+
+document.addEventListener('keydown', (event)=>{
+    if(event.key === 'a'){
+        isApressed = true
+        console.log(isApressed)
+    }
+    isApressed = false
+})
+
+
+
 window.setInterval(gameLoop, 10) //gameLoop wykonywany zo 10ms
 
-
 function updateParameters(){
-   gravity = Number(document.getElementById('gravity').value)
-   bouncines = Number(document.getElementById('bouncines').value)
-}
+    gravity = Number(document.getElementById('gravity').value)
+    bouncines = Number(document.getElementById('bouncines').value)
+ }
 
-function gameLoop(event){   
+function gameLoop(){   
        
     c.clearRect(0, 0, canvas.width, canvas.height) //czyści canvas żeby narysować elementy po uaktualnieniu pozycji
 
     for(i=0; i<ballCounter.length;i++){
         
         var currentBall = ballCounter[i]
-        //countOverlap(event, currentBall)
-        currentBall.addCircle(event, currentBall) 
+        
+       
+
+        currentBall.drawCircle() 
+        currentBall.countOverlap() 
+       
+        //console.log(`KulaX: ${currentBall.x}, KulaY: ${currentBall.y}`)
         currentBall.velocity += gravity 
         currentBall.y += currentBall.velocity 
         
@@ -37,19 +57,11 @@ function gameLoop(event){
             currentBall.y = canvas.height - currentBall.r
             currentBall.velocity *= -bouncines
             
-        }            
+        } 
     }
 }
     
-function countOverlap(element){
-    var xDistance = clientX - element.x
-    var yDistance = clientY - element.y
-    var distance = xDistance^2 + yDistance^2
-    if (distance<=element.r){
-        element.color = "#00FF00"
-        
-    }
-}
+
 
 class Ball{
     constructor(x, y, color){
@@ -60,7 +72,7 @@ class Ball{
         this.r = 20
     }
 
-    addCircle(){
+    drawCircle(){
     
         c.beginPath() //początek ściezki
         c.arc(this.x, this.y, this.r, 0, 2*Math.PI) //rysuje ścieżkę będącą kołem
@@ -70,11 +82,27 @@ class Ball{
        
     }
 
+    countOverlap(){
+      // console.log(`Mouse X: ${xPos}, Mouse Y: ${yPos}`);
+        let xDistance = Math.abs(xPos - this.x)
+        let yDistance = Math.abs(yPos - this.y)
+        let distance =  xDistance + yDistance
+      //console.log(`odległość X: ${xDistance}, odległość Y: ${yDistance} Dystans:${distance}`)
+
+         if(distance<=20){ 
+            this.color="#00FF00"
+         }
+         if (distance>=20){
+            this.color="#FF0000"
+         }
+
+       
     
+    }   
 }
 
-function createBall(event){
-    ballCounter[ballAmount] = new Ball(event.clientX, event.clientY, "#FF0000")        //Tworzy nowy obiekt klasy ball 
+function createBall(){
+    ballCounter[ballAmount] = new Ball(xPos, yPos, "#FF0000")        //Tworzy nowy obiekt klasy ball 
     ballAmount++
     
 
@@ -84,7 +112,10 @@ function createBall(event){
 
 
 
-
+//c.beginPath()
+//c.moveTo(currentBall.x, currentBall.y)
+//c.lineTo(xPos, yPos)
+//c.stroke()
 
 
    
