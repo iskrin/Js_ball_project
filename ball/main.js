@@ -69,7 +69,8 @@ class Ball{
         this.y= y 
         this.color = color   
         this.velocity= gravity
-        this.r = 20
+        this.r = 200
+        this.r2 = this.r * this.r
     }
 
     drawCircle(){
@@ -84,15 +85,15 @@ class Ball{
 
     countOverlap(){
       // console.log(`Mouse X: ${xPos}, Mouse Y: ${yPos}`);
-        let xDistance = Math.abs(xPos - this.x)
-        let yDistance = Math.abs(yPos - this.y)
-        let distance =  xDistance + yDistance
+        let xDistance = xPos - this.x
+        let yDistance = yPos - this.y
+        let distance =  xDistance * xDistance + yDistance * yDistance
       //console.log(`odległość X: ${xDistance}, odległość Y: ${yDistance} Dystans:${distance}`)
 
-         if(distance<=20){ 
+         if(distance<=this.r2){ 
             this.color="#00FF00"
          }
-         if (distance>=20){
+         if (distance>=this.r2){
             this.color="#FF0000"
          }
 
